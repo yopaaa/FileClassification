@@ -1,45 +1,20 @@
-import os
-import shutil
-
-def search_files(directory, filename):
-    matches = []
-    if not os.path.exists(directory):
-        print('directory doests exits')
-        return False
-
-    resultSerch = os.walk(directory)
-
-    for root, _, files in resultSerch:
-        for file in files:
-            if filename.lower() in file.lower():
-                matches.append(os.path.join(root, file))
-
-    return matches
-
-def move_files(source_folder, target_folder, target_name):
-    found_files = search_files(source_folder, target_name)
-    if found_files:
-        print("File ditemukan. Memindahkan file...")
-        if not os.path.exists(target_folder):
-            os.makedirs(target_folder) 
-
-        for file_path in found_files:
-            file_name = os.path.basename(file_path)
-            target_path = os.path.join(target_folder, file_name)
-            shutil.move(file_path, target_path)
-        print("Pemindahan file selesai.")
+from func.searchFiles import searchFiles
+from func.moveFiles import moveFiles
+from func.findDuplicateFiles import findDuplicateFiles
+from func.removeDuplicateFiles import removeDuplicateFiles
 
 
 print('select working tolls')
 print('1. search files')
 print('2. search and move files')
+print('3. find duplicate files')
 tools_options = input("select: ")
 
 if tools_options == '1':
     folder_path = input("Masukkan direktori tempat pencarian file: ")
     target_filename = input("Masukkan nama file yang ingin dicari: ")
 
-    found_files = search_files(folder_path, target_filename)
+    found_files = searchFiles(folder_path, target_filename)
 
     if found_files:
         print("File ditemukan:")
@@ -47,8 +22,22 @@ if tools_options == '1':
             print(file_path)
 
 elif tools_options == '2':
-    source_folder_path = input('Masukan folder sumber: ')  # Ganti dengan path folder sumber
-    target_folder_path = input('Masukan folder tujuan: ')  # Ganti dengan path folder tujuan
-    target_name = input('masukan nama ataupun extensi file target: ')  # Ganti dengan nama yang ingin Anda cari dan pindahkan
+    source_folder_path = input('Masukan folder sumber: ')
+    target_folder_path = input('Masukan folder tujuan: ') 
+    target_name = input('masukan nama ataupun extensi file target: ') 
 
-    move_files(source_folder_path, target_folder_path, target_name)
+    moveFiles(source_folder_path, target_folder_path, target_name)
+
+elif tools_options == '3':
+    target_folder_path = input('Masukan folder tujuan: ') 
+
+    duplicate = findDuplicateFiles(target_folder_path)
+    # print(duplicate)
+    if duplicate:
+        isDeleteDuplicate = input('Apakah kamu ingin menghapus file duplicate(y/n): ')
+        if isDeleteDuplicate == 'y':
+            removeDuplicateFiles(duplicate)
+        else:
+            print(duplicate)
+    #     for file_path in duplicate:
+    #         print(file_path)
