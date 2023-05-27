@@ -1,10 +1,7 @@
 import os
 import shutil
-from .searchFiles import searchFiles
-# import .searchFiles
 
-def moveFiles(source_folder, target_folder, target_name):
-    found_files = searchFiles(source_folder, target_name)
+def moveFiles(found_files, target_folder):
     if found_files:
         print("File ditemukan. Memindahkan file...")
         if not os.path.exists(target_folder):
