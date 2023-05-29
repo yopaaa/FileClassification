@@ -1,10 +1,11 @@
 from func.findFiles import findFiles
 from func.moveFiles import moveFiles
 from func.findDuplicateFiles import findDuplicateFiles
-from func.removeDuplicateFiles import removeDuplicateFiles
+from func.removeDuplicateFiles import removeDuplicateFiles,removeFiles
 from func.listFolders import printFolderTree,listFolders
 from func.findAllFiles import findAllFiles
 from func.synchronizeFolders import synchronizeFolders,synchronize_and_copy_files
+from func.findEmptyFolders import findEmptyFolders
 import os
 
 tools_options = 0
@@ -14,10 +15,11 @@ options = {
     '2': 'search and move files',
     '3': 'find duplicate files',
     '4': 'list folders',
-    '5': 'sync 2 folders'
+    '5': 'sync 2 folders',
+    '6': 'find empty folders'
 }
 def clearBash():
-    is_clear = input("Apakah kamu ingin membersihkan console? (y/n) >>> ")
+    is_clear = input("\nApakah kamu ingin membersihkan console? (y/n) >>> ")
     if is_clear == 'n':
         return
     print("\033c")
@@ -88,8 +90,6 @@ while tools_options != 'q':
         source_folder_path = os.path.normpath(input('Masukan folder sumber: ')) 
         target_folder_path = os.path.normpath(input('Masukan folder tujuan: '))
         
-        print(source_folder_path)
-        
         synchronized_contents = synchronizeFolders(source_folder_path, target_folder_path)
         if synchronized_contents:
             print("File yang perlu disinkronisasi:", len(synchronized_contents))
@@ -103,5 +103,23 @@ while tools_options != 'q':
             print("Tidak ada file yang perlu disinkronisasi.")
         
         clearBash()
-        
+    
+    elif tools_options == '6':
+        source_folder_path = os.path.normpath(input('Masukan folder sumber: ')) 
+
+        empty_folders = findEmptyFolders(source_folder_path)
+
+        if empty_folders:
+            print("Folder kosong yang ditemukan: ", len(empty_folders))
+            is_delete = input('Hapus sekarang? (y/n): ')
+            if is_delete == 'y':
+                for folder in empty_folders:
+                    removeFiles(folder)
+            else:
+                for folder in empty_folders:
+                    print(folder)
+        else:
+            print("Tidak ada folder kosong di dalam direktori tersebut.")
+
+        clearBash()
 
